@@ -1,0 +1,31 @@
+{
+  "authors": [
+    {
+      "name": "Szymon Szymański",
+      "email": "szymon.szymanski@hotmail.com"
+    }
+  ],
+  "require": {
+    "psr/cache": "^1.0",
+    "psr/log": "^1.0"
+  },
+  "require-dev": {
+    "phpspec/phpspec": "^4.3",
+    "phpunit/phpunit": "^7",
+    "codedungeon/phpunit-result-printer": "^0.19.10"
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "autoload": {
+    "psr-4": {
+      "Dixons\\": "src/"
+    },
+    "exclude-from-classmap": ["/tests/", "/test/", "/Tests/", "/Test/"]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Dixons\\": "tests/"
+    }
+  }
+}
