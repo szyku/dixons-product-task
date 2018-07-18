@@ -17,15 +17,11 @@ final class Duration
         $this->interval->invert = $past;
     }
 
-    /**
-     * Returns a Duration object
-     */
     public static function inSeconds(int $seconds): self
     {
-        $past = $seconds < 0;
-        $seconds = abs($seconds);
+        $format = $seconds < 0 ? '-' : "" . "$seconds seconds";
 
-        return new self("PT{$seconds}S", $past);
+        return new self($format, $seconds < 0);
     }
 
     public function isPast(): bool
@@ -39,6 +35,11 @@ final class Duration
         $isNotPast = !$this->isPast();
 
         return $isNotPast && $isNotZeroTime;
+    }
+
+    public function applyTo(\DateTimeImmutable $dateTime): \DateTimeImmutable
+    {
+        return $dateTime->add($this->interval);
     }
 
     private function isZeroTime(): bool
