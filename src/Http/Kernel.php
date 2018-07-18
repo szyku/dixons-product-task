@@ -29,7 +29,6 @@ final class Kernel extends HttpKernel
     public function __construct()
     {
         $this->bootstrapServiceContainer();
-        var_dump($this->container); die();
         $this->init();
     }
 
