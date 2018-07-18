@@ -8,8 +8,27 @@ services:
         class: Dixons\Implementation\Persistence\EchoMockedMySQLDriver
     product_factory:
         class: Dixons\Implementation\Product\Factory\ProductFactory
+    logger_mock:
+        class: Dixons\Implementation\Logging\MockLogger
     app_clock:
         class: Dixons\Implementation\Time\Clock
+
+    product_stats:
+        class: Dixons\Implementation\Product\Analysis\ProductStatistics
+        arguments:
+            - '@mysql_mock_driver'
+
+    encoder_json:
+        class: Symfony\Component\Serializer\Encoder\JsonEncoder
+
+    normalizer_property:
+        class: Symfony\Component\Serializer\Normalizer\PropertyNormalizer
+
+    serializer:
+        class: Symfony\Component\Serializer\Serializer
+        arguments:
+            - ['@encoder_json']
+            - ['@normalizer_property']
 
     product_query:
         class: Dixons\Implementation\Product\Query\ProductQuery
@@ -32,3 +51,34 @@ services:
             - '@product_query.inner'
             - '@product_cache_filesystem'
             - '@app_clock'
+
+    command_product_request_counter_handler:
+        class: Dixons\Application\Product\Command\IncreaseRequestCountHandler
+        arguments:
+            - '@product_stats'
+
+    command_bus:
+        class: Dixons\Implementation\CommandBus\SimpleCommandBus
+        calls:
+            - [registerHandler, ['@command_counter_handler']]
+
+    command_bus_logger:
+        class: Dixons\Implementation\CommandBus\CommandBusLoggerDecorator
+        deocrates: 'command_bus'
+        arguments:
+            - '@command_bus.inner'
+            - '@logger_mock'
+
+    action_product_base:
+        class:
+        abstract: true
+        arguments:
+            - '@product_query'
+            - '@serializer'
+
+    action_product_detailed:
+        class: Dixons\Http\Action\BaseProductAction
+        parent: action_product_base
+        arguments:
+            - '@command_bus'
+            - '@logger_mock'

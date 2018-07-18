@@ -58,4 +58,11 @@ final class Assert
         }
     }
 
+    public static function notNull($value, string $msg): void
+    {
+        if (null === $value) {
+            throw new AssertionException($msg);
+        }
+    }
+
 }
