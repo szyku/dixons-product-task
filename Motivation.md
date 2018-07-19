@@ -17,3 +17,10 @@ combined from Symfony component although specifications and tests would be enoug
 I decided to stick to specs for the App part with some minor units.
 Of course, I would also add acceptance or functional tests for endpoints, but this simple app is already over-engineered.
 
+### Authorization, Authentication and Security
+
+Nothing implemented. No reason to do so for such simple task.
+
+### Contact
+
+I'll be more than happy to answer questions or debate about my design decisions via email.

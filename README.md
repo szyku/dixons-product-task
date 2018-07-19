@@ -40,6 +40,10 @@ make install
 php -S localhost:8000 -t public/
 ```
 
+## Docs
+
+You can find openAPI/swagger documentation for endpoints under `docs` folder. [Swagger Editor](https://editor.swagger.io/) can load and display it nicely.
+
 ## Tests
 
 Global PHP (7.2+)
