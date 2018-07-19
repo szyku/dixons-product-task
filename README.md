@@ -2,6 +2,8 @@
 
 Author: Szymon Szymański [szymon dot szymanski at hotmail dot com]
 
+Be sure to check `Motivation.md` for the author's thoughts on implementing this task.
+
 ## Prerequisites
 
 - PHP 7.2
