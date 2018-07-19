@@ -10,7 +10,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
-use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+use Symfony\Component\HttpKernel\Controller\ContainerControllerResolver;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Routing\Loader\YamlFileLoader as RouteYamlFileLoader;
@@ -47,7 +47,7 @@ final class Kernel extends HttpKernel
         $dispatcher = new EventDispatcher();
         $dispatcher->addSubscriber(new RouterListener($matcher, new RequestStack()));
 
-        parent::__construct($dispatcher, new ControllerResolver(), new RequestStack(), new ArgumentResolver());
+        parent::__construct($dispatcher, new ContainerControllerResolver($this->container), new RequestStack(), new ArgumentResolver());
     }
 
     private function bootstrapServiceContainer(): void
@@ -60,14 +60,17 @@ final class Kernel extends HttpKernel
         $this->container->getParameterBag()->add([
             'kernel.dir' => __DIR__,
         ]);
+
+        $this->container->compile();
     }
-
-
 
     public function run()
     {
         $request = Request::createFromGlobals();
         $response = $this->handle($request);
+
+        $response->send();
+
         $this->terminate($request, $response);
     }
 }

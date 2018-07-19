@@ -1,11 +1,11 @@
 product_detailed:
     path:     /product/{id}
-    method: GET
+    methods: ['GET']
     defaults:
-        _controller: '\Dixons\Http\Action\GetDetailedProduct'
+        _controller: 'Dixons\Http\Action\GetDetailedProduct'
 
 product_confidential:
     path:     /admin/product/{id}
-    method: GET
+    methods: ['GET']
     defaults:
-        _controller: '\Dixons\Http\Action\GetConfidentialProduct'
+        _controller: 'Dixons\Http\Action\GetConfidentialProduct'

@@ -1,6 +1,7 @@
 parameters:
     default_ttl_sec: 3600
     cache_dir: "%kernel.dir%/../../var/cache"
+
 services:
     elastic_mock_driver:
         class: Dixons\Implementation\Persistence\EchoMockedElasticSearchDriver
@@ -8,7 +9,7 @@ services:
         class: Dixons\Implementation\Persistence\EchoMockedMySQLDriver
     product_factory:
         class: Dixons\Implementation\Product\Factory\ProductFactory
-    logger_mock:
+    logger:
         class: Dixons\Implementation\Logging\MockLogger
     app_clock:
         class: Dixons\Implementation\Time\Clock
@@ -27,8 +28,8 @@ services:
     serializer:
         class: Symfony\Component\Serializer\Serializer
         arguments:
-            - ['@encoder_json']
             - ['@normalizer_property']
+            - ['@encoder_json']
 
     product_query:
         class: Dixons\Implementation\Product\Query\ProductQuery
@@ -48,7 +49,7 @@ services:
         class: Dixons\Implementation\Product\Query\ProductQueryCacheDecorator
         decorates: 'product_query'
         arguments:
-            - '@product_query.inner'
+            - '@product_query_cached.inner'
             - '@product_cache_filesystem'
             - '@app_clock'
 
@@ -60,25 +61,34 @@ services:
     command_bus:
         class: Dixons\Implementation\CommandBus\SimpleCommandBus
         calls:
-            - [registerHandler, ['@command_counter_handler']]
+            - [registerHandler, ['Dixons\Application\Product\Command\IncreaseRequestCount','@command_product_request_counter_handler']]
 
     command_bus_logger:
         class: Dixons\Implementation\CommandBus\CommandBusLoggerDecorator
-        deocrates: 'command_bus'
+        decorates: 'command_bus'
         arguments:
-            - '@command_bus.inner'
-            - '@logger_mock'
+            - '@command_bus_logger.inner'
+            - '@logger'
 
     action_product_base:
-        class:
+        class: Dixons\Http\Action\GetDetailedProduct
         abstract: true
         arguments:
             - '@product_query'
             - '@serializer'
 
-    action_product_detailed:
-        class: Dixons\Http\Action\BaseProductAction
+    Dixons\Http\Action\GetDetailedProduct:
+        class: Dixons\Http\Action\GetDetailedProduct
         parent: action_product_base
+        public: true
         arguments:
             - '@command_bus'
-            - '@logger_mock'
+            - '@logger'
+
+    Dixons\Http\Action\GetConfidentialProduct:
+        class: Dixons\Http\Action\GetConfidentialProduct
+        parent: action_product_base
+        public: true
+        arguments:
+            - '@command_bus'
+            - '@logger'

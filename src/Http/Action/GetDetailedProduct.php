@@ -4,7 +4,6 @@
 namespace Dixons\Http\Action;
 
 
-use Dixons\Application\Assertion\Assert;
 use Dixons\Application\CommandBus\Exception\NoHandlerFoundException;
 use Dixons\Application\CommandBus\ICommandBus;
 use Dixons\Application\Exception\NotFoundException;
@@ -32,11 +31,8 @@ final class GetDetailedProduct extends BaseProductAction
     }
 
 
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, string $id)
     {
-        $id = $request->get('id');
-        Assert::notNull($id);
-
         $increaseCount = new IncreaseRequestCount($id);
 
         try {

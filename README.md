@@ -2,6 +2,13 @@
 
 Author: Szymon Szymański [szymon dot szymanski at hotmail dot com]
 
+## Prerequisites
+
+- PHP 7.2
+- composer
+
+Optionally docker to reuse Makefile and commands.
+
 ## Installation
 
 There's just composer needed to run this.
@@ -23,6 +30,12 @@ docker run --rm -v $PWD:/app --user $(id -u):$(id -g) composer composer install
 Or use make with docker:
 ```bash
 make install
+```
+
+## How to run
+
+```bash
+php -S localhost:8000 -t public/
 ```
 
 ## Tests
